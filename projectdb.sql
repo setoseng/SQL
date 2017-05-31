@@ -108,19 +108,6 @@ WHERE
 	tech.id IS NULL;
 --12. Order the projects by how many tech it uses.
 SELECT 
-	tech.name,COUNT(tech.id)
-FROM 
-	project
-LEFT OUTER JOIN 
-	project_uses_tech on project_uses_tech.project_id = project.id
-LEFT OUTER JOIN
-	tech on project_uses_tech.tech_id = tech.id
-GROUP BY 
-	tech.id
-ORDER BY
-	tech.id;
---13.
-SELECT 
 	project.name,COUNT(project.id)
 FROM 
 	project
@@ -132,7 +119,34 @@ GROUP BY
 	project.id
 ORDER BY
 	project.id;
-
+---13. Order the tech by how many projects use it.
+SELECT 
+	project.name,COUNT(project_uses_tech.tech_id) as techs_used
+FROM 
+	project
+LEFT OUTER JOIN 
+	project_uses_tech on project_uses_tech.project_id = project.id
+LEFT OUTER JOIN
+	tech on project_uses_tech.tech_id = tech.id
+GROUP BY 
+	project.id
+ORDER BY
+	techs_used DESC;
+--14.What is the average number of techs used by a project?
+SELECT 
+	AVG(techs_used)
+FROM 
+	(SELECT 
+		project.name,COUNT(project_uses_tech.tech_id) AS techs_used
+	FROM 
+		project
+	LEFT OUTER JOIN 
+		project_uses_tech on project_uses_tech.project_id = project.id
+	LEFT OUTER JOIN
+		tech on project_uses_tech.tech_id = tech.id
+	GROUP BY 
+		project.id) 
+AS counts;
 
 
 
